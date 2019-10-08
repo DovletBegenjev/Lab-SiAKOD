@@ -42,7 +42,7 @@ void BinIn(unsigned char* Buf, int len)
 
 int main()
 {
-	cout << "Something";
+	cout << "Dovlet=GOOD BOY";
 	long q;
 	cout << "Enter number (long): ";
 	cin >> q;
