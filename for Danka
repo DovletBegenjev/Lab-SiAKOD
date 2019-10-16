@@ -1,0 +1,66 @@
+// Test.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
+//
+
+#include "pch.h"
+#include <iostream>
+#include <Windows.h>
+using namespace std;
+
+class any 
+{
+
+public:
+	any() 
+	{
+		x = 0;
+		y = 0;
+	}
+
+	any(int valX, int valY)
+	{
+		x = valX;
+		y = valY;
+	}
+
+	any& operator =(any& other) {
+
+		this->x = other.x;
+		this->y = other.y;
+		return *this;
+
+	}
+	
+	//any operator +(const any &other) // ссылка на объект, с которым складываем
+	//{
+	//	any q;
+	//	q.x = this->x + other.x;
+	//	q.y = this->y + other.y;
+	//	return q;
+	//}
+
+	any &plus(const any &other) 
+	{
+		any temp;
+		temp.x = this->x + other.x;
+		temp.y = this->y + other.y;
+		return temp;
+	}
+
+	void out()
+	{
+		cout << x / 2.0 << ends << y / 2.0 << endl;
+	}
+
+private:
+	int x, y;
+};
+
+int main()
+{
+	any a(3, 5);
+	any b(4, 5);
+
+	any c;
+	c = a.plus(b);
+	c.out();
+}
