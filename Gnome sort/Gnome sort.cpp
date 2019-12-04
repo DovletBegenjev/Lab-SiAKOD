@@ -204,6 +204,7 @@ int main()
 		arr_denom[i] = rand() % (lol * 2 + 1) - (lol + 1);
 	}
 
+
 	for (int i = 0; i < lol; i++)
 	{
 		r1[i] = Fraction(arr_num[i], arr_denom[i], 0);
