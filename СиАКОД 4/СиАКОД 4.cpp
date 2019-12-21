@@ -5,6 +5,110 @@
 #include <iostream>
 using namespace std;
 
+template<typename T1>
+class Stack
+{
+private:
+	T1 *steck;
+	int top; // верхний элемент
+	int StackSize;
+
+public:
+	Stack();
+	~Stack();
+
+	// поместить элемент в стек
+	void push(T1 data);
+
+	// извлечь элемент из стека
+	void pop();	
+
+	// прочитать элемент из вершины стека
+	T1 top_el();
+
+	// проверка на пустоту
+	bool IsEmpty();
+
+	// очистить стек
+	void clear_stack();
+
+	// размер стека
+	int GetStackSize()
+	{
+		return (top + 1);
+	}
+};
+
+template<typename T1>
+Stack<T1>::Stack()
+{
+	StackSize = 100;
+	steck = new T1[StackSize];
+	top = -1;
+}
+
+template<typename T1>
+Stack<T1>::~Stack()
+{
+	delete[]steck;
+}
+
+template<typename T1>
+void Stack<T1>::push(T1 data)
+{
+	if (top < StackSize - 1)
+	{
+		top++;
+		steck[top] = data;
+	}
+}
+
+template<typename T1>
+void Stack<T1>::pop()
+{
+	if (top != -1)
+	{
+		top--;
+	}
+}
+
+template<typename T1>
+T1 Stack<T1>::top_el()
+{
+	if (top != -1)
+	{
+		return steck[top];
+	}
+	else
+	{
+		return -1;
+	}
+}
+
+template<typename T1>
+bool Stack<T1>::IsEmpty()
+{
+	if (top != -1)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+template<typename T1>
+void Stack<T1>::clear_stack()
+{
+	while (StackSize)
+	{
+		pop();
+	}
+}
+
+//----------------- Список на ПЛС -----------------//
+
 template<typename T>
 class Queue_on_SLL
 {
@@ -140,4 +244,30 @@ int main()
 	{
 		cout << q[i] << endl;
 	}
+
+	Stack<int> s;
+	
+	cout << "Top el: " << s.top_el() << endl;
+
+	cout << "Empty or not? " << s.IsEmpty() << endl;
+
+	cout << "Pushing" << endl;
+	s.push(5);
+	s.push(10);
+	s.push(25);
+
+	cout << "Empty or not? " << s.IsEmpty() << endl;
+
+	int a = s.GetStackSize();
+	cout << "Size: " << a << endl;
+	
+	cout << "Top el: " << s.top_el() << endl;
+
+	cout << "Poping" << endl;
+	s.pop();
+
+	a = s.GetStackSize();
+	cout << "Size: " << a << endl;
+
+	cout << "Top el: " << s.top_el() << endl;
 }
