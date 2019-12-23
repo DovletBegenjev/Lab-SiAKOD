@@ -3,7 +3,11 @@
 
 #include "pch.h"
 #include <iostream>
+#include <string>
+#include <ctime>
 using namespace std;
+
+//----------------- Стек на массиве -----------------//
 
 template<typename T1>
 class Stack
@@ -21,7 +25,7 @@ public:
 	void push(T1 data);
 
 	// извлечь элемент из стека
-	void pop();	
+	void pop();
 
 	// прочитать элемент из вершины стека
 	T1 top_el();
@@ -90,11 +94,11 @@ bool Stack<T1>::IsEmpty()
 {
 	if (top != -1)
 	{
-		return 1;
+		return 0;
 	}
 	else
 	{
-		return 0;
+		return 1;
 	}
 }
 
@@ -131,6 +135,11 @@ public:
 	// перегруженный оператор [] 
 	T& operator[](const int index);
 
+	T top()
+	{
+		return tail;
+	}
+
 private:
 	template<typename T>
 	class Node
@@ -162,6 +171,7 @@ Queue_on_SLL<T>::Queue_on_SLL()
 template<typename T>
 Queue_on_SLL<T>::~Queue_on_SLL()
 {
+	cout << endl << "desturctor" << endl;
 	clear();
 }
 
@@ -180,7 +190,7 @@ void Queue_on_SLL<T>::pop_front()
 template<typename T>
 void Queue_on_SLL<T>::push_back(T data)
 {
-	if (head == nullptr)
+	if (Size == 0)
 	{
 		head = tail = new Node<T>(data);
 	}
@@ -223,51 +233,155 @@ T & Queue_on_SLL<T>::operator[](const int index)
 	}
 }
 
+//----------------- Запрос -----------------//
+
+struct Inquiry
+{
+	enum Priority
+	{
+		F0, F1, F2
+	};
+
+	string name;
+	time_t time;
+	Priority priority;
+};
+
 int main()
 {
-	Queue_on_SLL<int> q;
+	srand(time(0));
 
-	cout << "Pushing" << endl;
-	q.push_back(5);
-	q.push_back(10);
-	q.push_back(20);
+	int counter = 1;
 
-	for (int i = 0; i < q.GetSize(); i++)
+	Queue_on_SLL<Inquiry> queue_0;
+	Queue_on_SLL<Inquiry> queue_1;
+	Queue_on_SLL<Inquiry> queue_2;
+	Inquiry q_prior;
+
+	size_t qs_size;
+
+	Stack<Inquiry> stack;
+	Inquiry s;
+
+	time_t time_of_processing = 0;
+	time_t clockP = clock();
+
+	bool flag = true;
+
+	while (flag)
 	{
-		cout << q[i] << endl;
+		cout << "Seconds left to process the problem F" << q_prior.priority << ": " << time_of_processing << endl;
+
+		if (time_of_processing)
+		{
+			time_of_processing--;
+			clockP++;
+		}
+
+		if (queue_0.GetSize() == 0 && queue_1.GetSize() == 0 && queue_2.GetSize() == 0 && stack.IsEmpty())
+		{
+			cout << endl << "Enter number of elements you want to put in queues: ";
+			cin >> qs_size;
+			cout << endl;
+
+			if (!qs_size)
+			{
+				flag = false;
+			}
+
+			for (int i = 0; i < qs_size; i++)
+			{
+				switch (rand() % 3 + 0)
+				{
+				case 0:
+					q_prior.priority = Inquiry::Priority::F0;
+					q_prior.time = clockP;
+					q_prior.name = "Inquiry number " + to_string(counter);
+					cout << q_prior.name << ", priority F0, sent to the queue 0. Exact time: " << q_prior.time << endl;
+					counter++;
+					clockP++;
+					queue_0.push_back(q_prior);
+					break;
+
+				case 1:
+					q_prior.priority = Inquiry::Priority::F1;
+					q_prior.time = clockP;
+					q_prior.name = "Inquiry number " + to_string(counter);
+					cout << q_prior.name << ", priority F1, sent to the queue 1. Exact time: " << q_prior.time << endl;
+					counter++;
+					clockP++;
+					queue_1.push_back(q_prior);
+					break;
+
+				case 2:
+					q_prior.priority = Inquiry::Priority::F2;
+					q_prior.time = clockP;
+					q_prior.name = "Inquiry number " + to_string(counter);
+					cout << q_prior.name << ", priority F2, sent to the queue 2. Exact time: " << q_prior.time << endl;
+					counter++;
+					clockP++;
+					queue_2.push_back(q_prior);
+					break;
+
+				default:
+					cout << "An unexpected error occurred!";
+					break;
+				}
+
+				/*counter++;
+				clockP++;
+				queue_0.push_back(q_prior);
+				queue_1.push_back(q_prior);
+				queue_2.push_back(q_prior);*/
+			}
+		}
+
+		if (!time_of_processing)
+		{
+			if (queue_0.GetSize() != 0)
+			{
+				queue_0.pop_front();
+				time_of_processing = rand() % 5 + 1;
+				cout << endl << q_prior.name << ", priority F0, sent to the processor. Exact time: " << clockP << endl;
+			}
+			else if (queue_0.GetSize() != 0)
+			{
+				stack.push(q_prior);
+				queue_0.pop_front();
+				cout << endl << q_prior.name << ", priority F0. Processor is busy, sent to the stack. Exact time: " << clockP << endl;
+			}
+
+			if (!time_of_processing)
+			{
+				if (queue_0.GetSize() == 0 && queue_1.GetSize() != 0)
+				{
+					queue_1.pop_front();
+					time_of_processing = rand() % 5 + 1;
+					cout << endl << q_prior.name << ", priority F1, sent to the processor. Exact time: " << clockP << endl;
+				}
+				else if (queue_1.GetSize() != 0)
+				{
+					stack.push(q_prior);
+					queue_1.pop_front();
+					cout << endl << q_prior.name << ", priority F1. Processor is busy, sent to the stack. Exact time: " << clockP << endl;
+				}
+			}
+
+			if (!time_of_processing)
+			{
+				if (queue_0.GetSize() == 0 && queue_1.GetSize() == 0 && queue_2.GetSize() != 0)
+				{
+					queue_2.pop_front();
+					time_of_processing = rand() % 5 + 1;
+					cout << endl << q_prior.name << ", priority F2, sent to the processor. Exact time: " << clockP << endl;
+				}
+				else if (queue_2.GetSize() != 0)
+				{
+					stack.push(q_prior);
+					queue_2.pop_front();
+					cout << endl << q_prior.name << ", priority F2. Processor is busy, sent to the stack. Exact time: " << clockP << endl;
+				}
+			}
+		}
 	}
-
-	cout << "Poping" << endl;
-	q.pop_front();
-
-	for (int i = 0; i < q.GetSize(); i++)
-	{
-		cout << q[i] << endl;
-	}
-
-	Stack<int> s;
-	
-	cout << "Top el: " << s.top_el() << endl;
-
-	cout << "Empty or not? " << s.IsEmpty() << endl;
-
-	cout << "Pushing" << endl;
-	s.push(5);
-	s.push(10);
-	s.push(25);
-
-	cout << "Empty or not? " << s.IsEmpty() << endl;
-
-	int a = s.GetStackSize();
-	cout << "Size: " << a << endl;
-	
-	cout << "Top el: " << s.top_el() << endl;
-
-	cout << "Poping" << endl;
-	s.pop();
-
-	a = s.GetStackSize();
-	cout << "Size: " << a << endl;
-
-	cout << "Top el: " << s.top_el() << endl;
 }
